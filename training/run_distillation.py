@@ -417,6 +417,7 @@ class DataCollatorSpeechSeq2SeqWithPadding:
 
         # replace initial prompt tokens with -100 to ignore correctly when computing the loss
         bos_index = torch.argmax((labels == self.decoder_start_token_id).long(), dim=1)
+        bos_index = torch.where(bos_index > 0, bos_index + 1, bos_index)
         prompt_mask = torch.arange(labels.shape[1]) < bos_index[:, None]
         labels = torch.where(prompt_mask, -100, labels)
 
